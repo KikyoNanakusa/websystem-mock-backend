@@ -18,6 +18,7 @@ func main() {
 	mux.HandleFunc("/api/shops", handlers.HandleStoresData)
 	mux.HandleFunc("/api/sales", handlers.HandleSalesData)
 	mux.HandleFunc("/api/shop-sales-summary", handlers.HandleShopsSalesSummary)
+	mux.HandleFunc("/api/login", handlers.HandleLogin)
 
 	handler := middlewares.CORS(mux)
 
