@@ -11,16 +11,13 @@ import (
 
 var Conn *pgx.Conn
 
-// ConnectDB データベース接続を初期化する関数
 func ConnectDB() {
 	var err error
 
-	// .env ファイルの読み込み
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	// DATABASE_URL の取得
 	databaseURL := os.Getenv("DATABASE_URL")
 	if databaseURL == "" {
 		log.Fatal("DATABASE_URL is not set in .env")

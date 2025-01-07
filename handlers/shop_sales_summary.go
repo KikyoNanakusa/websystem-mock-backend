@@ -8,7 +8,7 @@ import (
 	"websystem-backend/models"
 )
 
-func HandleAllShopsData(w http.ResponseWriter, r *http.Request) {
+func HandleShopsSalesSummary(w http.ResponseWriter, r *http.Request) {
 	query := `
 		SELECT s.shop_name, SUM(sa.quantity * p.price) AS total_sales
 		FROM shops s
@@ -19,21 +19,21 @@ func HandleAllShopsData(w http.ResponseWriter, r *http.Request) {
 	`
 	rows, err := db.Conn.Query(context.Background(), query)
 	if err != nil {
-		http.Error(w, "Failed to fetch all shops data", http.StatusInternalServerError)
+		http.Error(w, "Failed to fetch shop sales summary", http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
 
-	var allShops []models.ShopSales
+	var salesSummaries []models.ShopSales
 	for rows.Next() {
 		var shopSales models.ShopSales
 		if err := rows.Scan(&shopSales.ShopName, &shopSales.TotalSales); err != nil {
-			http.Error(w, "Failed to parse all shops data", http.StatusInternalServerError)
+			http.Error(w, "Failed to parse shop sales summary", http.StatusInternalServerError)
 			return
 		}
-		allShops = append(allShops, shopSales)
+		salesSummaries = append(salesSummaries, shopSales)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(allShops)
+	json.NewEncoder(w).Encode(salesSummaries)
 }
