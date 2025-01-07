@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"websystem-backend/db"
 	"websystem-backend/models"
@@ -15,7 +16,7 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	UserID       int    `json:"userId"`
+	UserID       string `json:"userId"`
 	Username     string `json:"username"`
 	Email        string `json:"email"`
 	AssignedShop string `json:"assignedShop,omitempty"`
@@ -42,11 +43,13 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	).Scan(&user.UserID, &user.Username, &user.PasswordHash, &user.Email, &user.AssignedShop)
 
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "Invalid username or password", http.StatusUnauthorized)
 		return
 	}
 
 	if !utils.CheckPassword(user.PasswordHash, req.Password) {
+		fmt.Println("Invalid password")
 		http.Error(w, "Invalid username or password", http.StatusUnauthorized)
 		return
 	}
